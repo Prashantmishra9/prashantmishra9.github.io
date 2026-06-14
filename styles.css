@@ -168,6 +168,39 @@ main {
   line-height: 1.7;
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid var(--divider);
+  border-radius: 9999px;
+  color: var(--secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-pill svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+a.hero-pill:hover,
+a.hero-pill:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 /* =========================================================
    About
    ========================================================= */

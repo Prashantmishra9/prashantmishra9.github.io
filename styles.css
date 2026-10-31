@@ -833,6 +833,132 @@ a.hero-pill:focus-visible {
   margin: 0;
 }
 
+.project-dialog-body strong {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Wide variant: projects with an architecture diagram */
+.project-dialog--wide {
+  width: 92vw;
+  max-width: 80rem;
+}
+
+.project-dialog--wide,
+.project-dialog--wide .project-dialog-inner {
+  max-height: 90vh;
+}
+
+/* Four boxes, 2 × 2: Problem | Impact / My Role | Key Design Decisions */
+.project-dialog-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .project-dialog-grid.is-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.project-box {
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem;
+}
+
+.project-dialog-body .project-impact ul {
+  list-style: none;
+  padding-left: 0;
+  gap: 0.5rem;
+}
+
+.impact-item {
+  display: grid;
+  grid-template-columns: 3.75rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.impact-metric {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.impact-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--secondary);
+}
+
+/* Solution architecture */
+.project-architecture {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.project-architecture-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.project-dialog-body .project-architecture-head h4 {
+  margin-bottom: 0;
+}
+
+.diagram-frame {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.diagram-frame iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  aspect-ratio: 1630 / 1310;
+}
+
+.diagram-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.diagram-hint svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (max-width: 767px) {
+  .diagram-frame iframe {
+    min-width: 960px;
+  }
+}
+
+@media (min-width: 768px) {
+  .diagram-hint {
+    display: none;
+  }
+}
+
 /* =========================================================
    404 page
    ========================================================= */

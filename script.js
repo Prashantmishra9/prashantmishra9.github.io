@@ -6,16 +6,26 @@
   // -----------------------------------------------------------------
   const PROJECTS = {
     "ai-advisor-desktop": {
-      title: "AI powered Advisor Desktop",
+      title: "AI Powered-Advisor Desktop",
       summary:
-        "Reduced manual research and operational overhead for financial advisors by embedding AI Agents into daily workflows. Enabled informed decision-making at scale, significantly improving advisor efficiency and client relationships",
+        "Reduced manual research and operational overhead for financial advisors by embedding AI agents into daily workflows. Enabled informed decision-making at scale, significantly improving advisor efficiency and client relationships",
       problem:
-        "Advisors managing large client portfolios spend significant time manually preparing for meetings by navigating fragmented data across multiple systems. This limits their ability to deliver timely, personalized advice and focus on client interactions",
+        "Advisors managing large books of clients prepare for each meeting by moving between CRM, portfolio systems, email, chat and market research. That prep time comes out of time with clients, and the context they assemble is often incomplete or out of date when they need it.",
       role: [
-        "Led technical design decisions for the AI-powered Advisor Desktop, identifying high-impact areas where GenAI could meaningfully reduce advisor effort and improve efficiency",
-        "Designed the end-to-end backend data schema and defined reusable architectural patterns to support scalable, agentic orchestration across the platform",
-        "Owned the AI system design across five core capabilities, including conversational research, advisor notebooks, AI-driven notifications, and post-call insights automation",
-        "Defined and implemented multi-agent workflows to extract insights from advisor interactions, automate follow-ups, update enterprise systems, and surface personalized learning recommendations",
+        "Led the AI system design end to end",
+        "Defined the orchestrator-plus-workflow agent pattern and the backend data schema",
+        "Designed the gateway layer for models and tools",
+        "Owned how compliance and guardrails fit into every response path",
+        "Took the design to production on Azure with the engineering team",
+      ],
+      diagram: "projects/ai-advisor-desktop/diagram.html",
+      decisions: [
+        { title: "One orchestrator, four focused workflows", text: "Each workflow has a narrow scope, so it can be tested, evaluated and released on its own." },
+        { title: "Two gateways, not direct calls", text: "The AI gateway centralizes token quotas, model routing and fallback between GPT-5.6 and Terra/Sol, and logging. The MCP gateway centralizes tool authentication, allow-lists and auditing." },
+        { title: "MCP as the integration layer", text: "A new system means a new MCP server, not an agent change." },
+        { title: "Compliance before the advisor sees anything", text: "Every response passes the compliance agent and AI Content Safety." },
+        { title: "Private by default", text: "Services use managed identities, and secrets are kept in Key Vault." },
+        { title: "Observable and evaluated", text: "Every agent step is traced, the same telemetry feeds the evaluation runs, and the deployment is zone-redundant." },
       ],
       architecture: [
         "MCP-based ingestion from CRM and enterprise systems, GenAI transcription of advisor and client calls, and a centralized data schema to aggregate structured and unstructured data",
@@ -24,9 +34,9 @@
         "A unified dashboard that surfaces client insights, call summaries, tasks, alerts, and notifications within existing advisor workflows",
       ],
       impact: [
-        "50% increase in operational efficiency as GenAI automates repetitive tasks and streamlines workflows, allowing advisors to serve more clients with less effort",
-        "80% reduction in errors as AI agents ensures data accuracy and consistency by proactively validating inputs and surfacing anomalies before they impact decisions",
-        "$60,000 additional revenue per advisor by surfacing timely insights and next-best actions, the AI Agents empowers advisors to focus on high-value opportunities that drive growth",
+        { metric: "50%", text: "higher operational efficiency, as GenAI automates repetitive tasks so advisors serve more clients with less effort" },
+        { metric: "80%", text: "fewer errors, as AI agents validate inputs and surface anomalies before they affect decisions" },
+        { metric: "$60K", text: "additional revenue per advisor, from timely insights and next-best actions" },
       ],
     },
     "llm-benchmarking": {
@@ -85,14 +95,14 @@
       "'": "&#39;",
     }[c]));
 
+  const hasContent = (value) =>
+    value != null && !(Array.isArray(value) && value.length === 0) && String(value).trim() !== "";
+
   const renderField = (value) => {
-    if (value == null || (Array.isArray(value) && value.length === 0)) {
-      return '<p>None</p>';
-    }
     const items = Array.isArray(value)
       ? value
       : String(value)
-          .split(/\n|•|;|—|-|\|/)
+          .split(/\n|•/)
           .map((s) => s.trim())
           .filter(Boolean);
     if (items.length > 1) {
@@ -144,29 +154,79 @@
   const dialogTitle = document.getElementById("project-dialog-title");
   const dialogBody = document.getElementById("project-dialog-body");
 
+  const section = (title, body, cls = "") =>
+    `<section${cls ? ` class="${cls}"` : ""}><h4>${title}</h4>${body}</section>`;
+
+  const renderImpact = (items) =>
+    "<ul>" +
+    items
+      .map((item) =>
+        typeof item === "string"
+          ? `<li class="impact-item"><span class="impact-text">${escape(item)}</span></li>`
+          : `<li class="impact-item"><span class="impact-metric">${escape(item.metric)}</span><span class="impact-text">${escape(item.text)}</span></li>`
+      )
+      .join("") +
+    "</ul>";
+
+  const renderDecisions = (items) =>
+    "<ul>" +
+    items.map((d) => `<li><strong>${escape(d.title)}.</strong> ${escape(d.text)}</li>`).join("") +
+    "</ul>";
+
+  const CHEVRON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+  const EXTERNAL =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>';
+
+  // Size the diagram iframe to its content (same origin), so it never scrolls vertically.
+  const fitFrame = (frame) => {
+    try {
+      const body = frame.contentDocument && frame.contentDocument.body;
+      if (body) frame.style.height = Math.ceil(body.getBoundingClientRect().height) + "px";
+    } catch (e) {
+      /* keep the CSS aspect-ratio fallback */
+    }
+  };
+
+  const renderArchitecture = (p) => {
+    let body = "";
+    if (p.diagram) {
+      body =
+        `<div class="project-architecture-head"><h4>Solution Architecture</h4>` +
+        `<a class="hero-pill" href="${escape(p.diagram)}" target="_blank" rel="noopener noreferrer">${EXTERNAL}<span>Open full screen</span></a></div>` +
+        `<p class="diagram-hint"><span>Scroll to explore</span>${CHEVRON}</p>` +
+        `<div class="diagram-frame"><iframe src="${escape(p.diagram)}" title="${escape(p.title)} solution architecture"></iframe></div>`;
+    } else if (hasContent(p.architecture)) {
+      body = `<h4>Solution Architecture</h4>${renderField(p.architecture)}`;
+    }
+    return body ? `<section class="project-architecture">${body}</section>` : "";
+  };
+
   const openProject = (id) => {
     const p = PROJECTS[id];
     if (!p || !dialog) return;
     dialogTitle.textContent = p.title;
+    dialog.classList.toggle("project-dialog--wide", Boolean(p.diagram));
+
+    // Up to four boxes, in reading order: Problem | Impact / My Role | Key Design Decisions
+    const boxes = [
+      hasContent(p.problem) && section("Problem Statement", renderField(p.problem), "project-box"),
+      hasContent(p.impact) && section("Impact", renderImpact(p.impact), "project-box project-impact"),
+      hasContent(p.role) && section("My Role", renderField(p.role), "project-box"),
+      hasContent(p.decisions) && section("Key Design Decisions", renderDecisions(p.decisions), "project-box"),
+    ].filter(Boolean);
+    const grid = boxes.length
+      ? `<div class="project-dialog-grid${boxes.length > 1 ? " is-split" : ""}">${boxes.join("")}</div>`
+      : "";
+
     dialogBody.innerHTML = `
       <p class="project-dialog-summary">${escape(p.summary)}</p>
-      <section>
-        <h4>Problem Statement</h4>
-        ${renderField(p.problem)}
-      </section>
-      <section>
-        <h4>Role</h4>
-        ${renderField(p.role)}
-      </section>
-      <section>
-        <h4>Solution Architecture</h4>
-        ${renderField(p.architecture)}
-      </section>
-      <section>
-        <h4>Impact</h4>
-        ${renderField(p.impact)}
-      </section>
+      ${grid}
+      ${renderArchitecture(p)}
     `;
+
+    const frame = dialogBody.querySelector(".diagram-frame iframe");
+    if (frame) frame.addEventListener("load", () => fitFrame(frame));
     if (typeof dialog.showModal === "function") {
       dialog.showModal();
     } else {
@@ -204,6 +264,10 @@
     });
     const closeBtn = dialog.querySelector(".project-dialog-close");
     if (closeBtn) closeBtn.addEventListener("click", closeProject);
+    window.addEventListener("resize", () => {
+      const frame = dialog.open && dialogBody.querySelector(".diagram-frame iframe");
+      if (frame) fitFrame(frame);
+    });
   }
 
   // -----------------------------------------------------------------

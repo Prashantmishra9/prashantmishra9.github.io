@@ -1,0 +1,792 @@
+{
+ "title": "AI Powered-Advisor Desktop · Solution architecture",
+ "subtitle": "L1 solution view · Microsoft Azure · single region, zone-redundant · orchestrator + workflow agents behind API, AI and MCP gateways",
+ "width": 1630,
+ "height": 1310,
+ "workflowBox": {
+  "x": 16,
+  "y": 990,
+  "w": 1144
+ },
+ "legendBox": {
+  "x": 1184,
+  "y": 1150
+ },
+ "groups": [
+  {
+   "id": "internet",
+   "kind": "internet",
+   "x": 16,
+   "y": 152,
+   "w": 140,
+   "h": 600,
+   "label": "Internet"
+  },
+  {
+   "id": "azure",
+   "kind": "cloud",
+   "x": 172,
+   "y": 88,
+   "w": 1282,
+   "h": 880,
+   "label": "Microsoft Azure"
+  },
+  {
+   "id": "region",
+   "kind": "region",
+   "x": 188,
+   "y": 118,
+   "w": 1250,
+   "h": 836,
+   "label": "East US"
+  },
+  {
+   "id": "vnet",
+   "kind": "vnet",
+   "x": 204,
+   "y": 152,
+   "w": 1052,
+   "h": 600,
+   "label": "vnet-advisor"
+  },
+  {
+   "id": "snet-app",
+   "kind": "subnet-private",
+   "x": 220,
+   "y": 196,
+   "w": 136,
+   "h": 540,
+   "label": "",
+   "note": "VNet integration"
+  },
+  {
+   "id": "snet-apim",
+   "kind": "subnet-private",
+   "x": 368,
+   "y": 196,
+   "w": 136,
+   "h": 540,
+   "label": ""
+  },
+  {
+   "id": "snet-agents",
+   "kind": "subnet-private",
+   "x": 516,
+   "y": 196,
+   "w": 400,
+   "h": 540,
+   "label": ""
+  },
+  {
+   "id": "workflows",
+   "kind": "cluster",
+   "x": 692,
+   "y": 310,
+   "w": 166,
+   "h": 420,
+   "label": "Agent workflows",
+   "labelPos": "bottom"
+  },
+  {
+   "id": "snet-ai-gw",
+   "kind": "subnet-private",
+   "x": 928,
+   "y": 196,
+   "w": 160,
+   "h": 540,
+   "label": ""
+  },
+  {
+   "id": "snet-aca",
+   "kind": "subnet-private",
+   "x": 1100,
+   "y": 520,
+   "w": 140,
+   "h": 216,
+   "label": ""
+  },
+  {
+   "id": "ai-paas",
+   "kind": "external",
+   "x": 1272,
+   "y": 152,
+   "w": 150,
+   "h": 360,
+   "label": "AI services",
+   "note": "public access disabled"
+  },
+  {
+   "id": "data-paas",
+   "kind": "external",
+   "x": 1040,
+   "y": 770,
+   "w": 250,
+   "h": 170,
+   "label": "Data · public access disabled",
+   "labelPos": "bottom"
+  },
+  {
+   "id": "shared",
+   "kind": "external",
+   "x": 204,
+   "y": 770,
+   "w": 820,
+   "h": 170,
+   "label": "Shared services · security & observability",
+   "labelPos": "bottom"
+  },
+  {
+   "id": "saas",
+   "kind": "internet",
+   "x": 1470,
+   "y": 470,
+   "w": 144,
+   "h": 450,
+   "label": "External SaaS"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "users",
+   "icon": "users",
+   "x": 86,
+   "y": 520,
+   "label": "Advisors",
+   "sub": "Entra ID SSO"
+  },
+  {
+   "id": "app",
+   "icon": "app-services",
+   "x": 288,
+   "y": 520,
+   "label": "Advisor\ndesktop",
+   "sub": "App Service",
+   "badges": [
+    "ZR"
+   ]
+  },
+  {
+   "id": "apigw",
+   "icon": "api-management-services",
+   "x": 436,
+   "y": 520,
+   "label": "API gateway",
+   "sub": "API Management",
+   "badges": [
+    "ZR"
+   ]
+  },
+  {
+   "id": "orch",
+   "icon": "ai-studio",
+   "x": 594,
+   "y": 520,
+   "label": "Orchestrator\nagent",
+   "sub": "Foundry Agent Service",
+   "highlight": true
+  },
+  {
+   "id": "comp",
+   "icon": "ai-studio",
+   "x": 775,
+   "y": 250,
+   "label": "Compliance agent",
+   "sub": "Foundry Agent Service"
+  },
+  {
+   "id": "wf1",
+   "icon": "ai-studio",
+   "x": 775,
+   "y": 370,
+   "label": "Client portfolio"
+  },
+  {
+   "id": "wf2",
+   "icon": "ai-studio",
+   "x": 775,
+   "y": 462,
+   "label": "Market intel"
+  },
+  {
+   "id": "wf3",
+   "icon": "ai-studio",
+   "x": 775,
+   "y": 554,
+   "label": "Asset & trade intel"
+  },
+  {
+   "id": "wf4",
+   "icon": "ai-studio",
+   "x": 775,
+   "y": 646,
+   "label": "Advisor helper"
+  },
+  {
+   "id": "aigw",
+   "icon": "api-management-services",
+   "x": 1008,
+   "y": 420,
+   "label": "AI gateway",
+   "sub": "API Management",
+   "badges": [
+    "ZR"
+   ]
+  },
+  {
+   "id": "mcpgw",
+   "icon": "api-management-services",
+   "x": 1008,
+   "y": 620,
+   "label": "MCP gateway",
+   "sub": "API Management",
+   "badges": [
+    "ZR"
+   ]
+  },
+  {
+   "id": "mcp",
+   "icon": "container-apps-environments",
+   "x": 1170,
+   "y": 620,
+   "label": "MCP servers",
+   "sub": "Container Apps",
+   "stack": 3,
+   "badges": [
+    "×3"
+   ]
+  },
+  {
+   "id": "cs",
+   "icon": "content-safety",
+   "x": 1347,
+   "y": 250,
+   "label": "Guardrails",
+   "sub": "AI Content Safety"
+  },
+  {
+   "id": "aoai",
+   "icon": "azure-open-ai",
+   "x": 1347,
+   "y": 420,
+   "label": "Azure OpenAI",
+   "sub": "GPT-5.6 · Terra/Sol"
+  },
+  {
+   "id": "sql",
+   "icon": "sql-database",
+   "x": 1110,
+   "y": 845,
+   "label": "Client DB",
+   "sub": "Azure SQL"
+  },
+  {
+   "id": "cosmos",
+   "icon": "azure-cosmos-db",
+   "x": 1230,
+   "y": 845,
+   "label": "Portfolio",
+   "sub": "Cosmos DB"
+  },
+  {
+   "id": "appi",
+   "icon": "application-insights",
+   "x": 288,
+   "y": 845,
+   "label": "App Insights",
+   "sub": "traces + evals · all resources"
+  },
+  {
+   "id": "law",
+   "icon": "log-analytics-workspaces",
+   "x": 436,
+   "y": 845,
+   "label": "Log Analytics"
+  },
+  {
+   "id": "kv",
+   "icon": "key-vaults",
+   "x": 604,
+   "y": 845,
+   "label": "Key Vault",
+   "sub": "SaaS secrets"
+  },
+  {
+   "id": "sf",
+   "icon": "software-as-a-service",
+   "x": 1542,
+   "y": 540,
+   "label": "Salesforce"
+  },
+  {
+   "id": "m365",
+   "icon": "software-as-a-service",
+   "x": 1542,
+   "y": 640,
+   "label": "M365",
+   "sub": "Outlook · Teams"
+  },
+  {
+   "id": "slack",
+   "icon": "software-as-a-service",
+   "x": 1542,
+   "y": 750,
+   "label": "Slack"
+  },
+  {
+   "id": "web",
+   "icon": "search",
+   "x": 1542,
+   "y": 850,
+   "label": "Web search"
+  }
+ ],
+ "edges": [
+  {
+   "from": "users",
+   "to": "app",
+   "kind": "sync",
+   "step": 1,
+   "label": "HTTPS",
+   "packets": false
+  },
+  {
+   "from": "app",
+   "to": "apigw",
+   "kind": "sync",
+   "step": 2,
+   "stepAt": 0.62,
+   "packets": false
+  },
+  {
+   "from": "apigw",
+   "to": "orch",
+   "kind": "sync",
+   "step": 3,
+   "stepAt": 0.62,
+   "packets": false
+  },
+  {
+   "from": "orch",
+   "to": "wf1",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     664,
+     512
+    ],
+    [
+     664,
+     362
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "orch",
+   "to": "wf2",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     664,
+     512
+    ],
+    [
+     664,
+     454
+    ]
+   ],
+   "packets": false,
+   "step": 4,
+   "stepAt": 0.08
+  },
+  {
+   "from": "orch",
+   "to": "wf3",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     664,
+     512
+    ],
+    [
+     664,
+     546
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "orch",
+   "to": "wf4",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     664,
+     512
+    ],
+    [
+     664,
+     638
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf1",
+   "to": "aigw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     362
+    ],
+    [
+     884,
+     412
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf2",
+   "to": "aigw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     454
+    ],
+    [
+     884,
+     412
+    ]
+   ],
+   "packets": false,
+   "step": 5,
+   "stepAt": 0.9
+  },
+  {
+   "from": "wf3",
+   "to": "aigw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     546
+    ],
+    [
+     884,
+     412
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf4",
+   "to": "aigw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     638
+    ],
+    [
+     884,
+     412
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf1",
+   "to": "mcpgw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     362
+    ],
+    [
+     884,
+     612
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf2",
+   "to": "mcpgw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     454
+    ],
+    [
+     884,
+     612
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf3",
+   "to": "mcpgw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     546
+    ],
+    [
+     884,
+     612
+    ]
+   ],
+   "packets": false,
+   "step": 6,
+   "stepAt": 0.9
+  },
+  {
+   "from": "wf4",
+   "to": "mcpgw",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     884,
+     638
+    ],
+    [
+     884,
+     612
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "aigw",
+   "to": "aoai",
+   "kind": "sync",
+   "step": 5,
+   "label": "quotas · routing · fallback",
+   "labelAt": 0.55,
+   "stepAt": 0.12,
+   "packets": false
+  },
+  {
+   "from": "mcpgw",
+   "to": "mcp",
+   "kind": "sync",
+   "step": 6,
+   "label": "MCP · tool auth",
+   "labelDy": -18,
+   "stepAt": 0.25,
+   "packets": false
+  },
+  {
+   "from": "mcp",
+   "to": "sql",
+   "kind": "sync",
+   "step": 6,
+   "fromSide": "b",
+   "toSide": "t",
+   "via": [
+    [
+     1170,
+     762
+    ],
+    [
+     1110,
+     762
+    ]
+   ],
+   "stepAt": 0.32,
+   "packets": false
+  },
+  {
+   "from": "mcp",
+   "to": "cosmos",
+   "kind": "sync",
+   "fromSide": "b",
+   "toSide": "t",
+   "via": [
+    [
+     1170,
+     762
+    ],
+    [
+     1230,
+     762
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "mcp",
+   "to": "sf",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     1380,
+     612
+    ],
+    [
+     1380,
+     532
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "mcp",
+   "to": "m365",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     1380,
+     612
+    ],
+    [
+     1380,
+     632
+    ]
+   ],
+   "step": 6,
+   "stepAt": 0.6,
+   "packets": false
+  },
+  {
+   "from": "mcp",
+   "to": "slack",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     1380,
+     612
+    ],
+    [
+     1380,
+     742
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "mcp",
+   "to": "web",
+   "kind": "sync",
+   "fromSide": "r",
+   "toSide": "l",
+   "via": [
+    [
+     1380,
+     612
+    ],
+    [
+     1380,
+     842
+    ]
+   ],
+   "packets": false
+  },
+  {
+   "from": "wf1",
+   "to": "comp",
+   "kind": "sync",
+   "step": 7,
+   "fromSide": "t",
+   "toSide": "b",
+   "stepAt": 0.5,
+   "packets": false
+  },
+  {
+   "from": "comp",
+   "to": "cs",
+   "kind": "sync",
+   "step": 8,
+   "fromSide": "r",
+   "toSide": "l",
+   "label": "harmful content · prompt injection",
+   "labelAt": 0.55,
+   "packets": false
+  },
+  {
+   "from": "comp",
+   "to": "apigw",
+   "kind": "sync",
+   "step": 9,
+   "fromSide": "l",
+   "toSide": "t",
+   "via": [
+    [
+     436,
+     242
+    ]
+   ],
+   "label": "approved response",
+   "labelAt": 0.45,
+   "packets": false
+  },
+  {
+   "from": "app",
+   "to": "appi",
+   "kind": "control",
+   "fromSide": "b",
+   "toSide": "t",
+   "label": "telemetry",
+   "labelAt": 0.45,
+   "packets": false
+  },
+  {
+   "from": "orch",
+   "to": "kv",
+   "kind": "control",
+   "fromSide": "b",
+   "toSide": "t",
+   "label": "managed identity",
+   "labelAt": 0.45,
+   "packets": false
+  }
+ ],
+ "workflow": [
+  "Advisor signs in with Entra ID and opens the Advisor desktop on App Service over HTTPS.",
+  "The desktop calls the API gateway (API Management) over HTTPS.",
+  "The API gateway authenticates and rate-limits the request, then hands it to the Orchestrator agent in Foundry Agent Service.",
+  "The orchestrator classifies intent and triggers one or more of four workflows: Client portfolio, Market intel, Asset & trade intel, Advisor helper.",
+  "Workflows call GPT-5.6 or Terra/Sol on Azure OpenAI through the AI gateway, which applies token quotas, model routing and fallback.",
+  "Workflows read data and take actions through the MCP gateway, which authorizes every tool call to MCP servers on Container Apps (Azure SQL, Cosmos DB, Salesforce, M365, Slack, web search).",
+  "Draft responses go to the Compliance agent for policy and suitability checks.",
+  "Guardrails (Azure AI Content Safety) screen the response for harmful content and prompt injection.",
+  "The approved response returns through the API gateway to the Advisor desktop."
+ ]
+}
